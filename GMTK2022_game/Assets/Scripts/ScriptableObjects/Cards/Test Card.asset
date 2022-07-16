@@ -10,9 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8457c3a3f2150584cb63d5368ed8d30b, type: 3}
-  m_Name: Avada
+  m_Name: Test Card
   m_EditorClassIdentifier: 
-  Name: Avada Kedava
-  Description: morram todos
-  Image: {fileID: 0}
+  Name: Test Card
+  Description: Esta eh uma carta de teste
+  Image: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   DamageMultiplier: 0
+  HealthMultiplier: 0
+  AddBaseDamage: 3
+  AddBaseHealth: 0

@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public BattleState currentState;
     public static event Action<BattleState> OnBattleStateChanged;
 
+
     private void Awake()
     {
         if (Instance != null && Instance != this)

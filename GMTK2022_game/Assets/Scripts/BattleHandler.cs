@@ -27,8 +27,6 @@ public class BattleHandler : MonoBehaviour
     }
     void Start()
     {
-        playerDamage = player.GetComponent<DiceManager>().Damage;
-        enemyDamage = enemy.GetComponent<DiceManager>().Damage;
         GameManager.Instance.UpdateBattleState(GameManager.BattleState.START);
         SpawnCharacters();
     }
@@ -64,7 +62,9 @@ public class BattleHandler : MonoBehaviour
     {
         Instantiate(player, playerSpawnPoint);
         Instantiate(enemy, enemySpawnPoint);
-  
+        playerDamage = player.GetComponent<DiceManager>().BaseDamage;
+        enemyDamage = enemy.GetComponent<DiceManager>().BaseDamage;
+
         await Task.Delay(1500);
         GameManager.Instance.UpdateBattleState(GameManager.BattleState.PLAYERTURN);
     }
@@ -72,9 +72,29 @@ public class BattleHandler : MonoBehaviour
     public async void OnAttackButtonPressed()
     {
         // player attack Animation
+        playerDamage = CalculateDamage(true);
         await Task.Delay(1500); // time
         enemy.GetComponent<DiceManager>().TakeDamage(playerDamage);
        
-        GameManager.Instance.UpdateBattleState(GameManager.BattleState.ENEMYTURN);
+        //GameManager.Instance.UpdateBattleState(GameManager.BattleState.ENEMYTURN);
+    }
+
+    private int CalculateDamage(bool isPlayer)
+    {
+        int dmg;
+        if (isPlayer)
+        {
+            dmg = UnityEngine.Random.Range(1, player.GetComponent<DiceManager>().BaseDamage + 1);
+        } else
+        {
+            dmg = UnityEngine.Random.Range(1, enemy.GetComponent<DiceManager>().BaseDamage + 1);
+        }
+
+        return dmg;
+    }
+
+    public void SetCardEffect(int dmgMultiplier, int hpMultiplier, int dmgBase, int hpBase)
+    {
+        playerDamage = playerDamage + (playerDamage * dmgMultiplier) + dmgBase;
     }
 }
