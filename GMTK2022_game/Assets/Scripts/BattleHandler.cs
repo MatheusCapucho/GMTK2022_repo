@@ -7,17 +7,28 @@ using UnityEngine.UI;
 
 public class BattleHandler : MonoBehaviour
 {
-    [SerializeField] private GameObject player;
-    [SerializeField] private GameObject enemy;
+    // Sorry..
+
+    public GameObject[] enemy;
+
+    private GameObject playerGO;
+    private GameObject enemyGO;   
 
     private int playerDamage;
-    private int enemyDamage;
+    private int enemyDamage;  
 
     private Transform playerSpawnPoint;
     private Transform enemySpawnPoint;
 
     [SerializeField]
     private Button attackButton;
+    [SerializeField]
+    private Button attackButton2;
+    [SerializeField]
+    private Button attackButton3;
+
+    private int diceIndex = -1;
+    private int enemyDiceIndex = -1;
 
 
     private void Awake()
@@ -40,18 +51,15 @@ public class BattleHandler : MonoBehaviour
     {
         GameManager.OnBattleStateChanged -= HandleBattle;
     }
-    private async void HandleBattle(GameManager.BattleState state)
+    private  void HandleBattle(GameManager.BattleState state)
     {
         // change banner
        
         attackButton.interactable = state == GameManager.BattleState.PLAYERTURN;
-
-        if (GameManager.BattleState.ENEMYTURN == GameManager.Instance.currentState)
+        
+        if (state == GameManager.BattleState.LOST && diceIndex <= 2)
         {
-            //anim
-            await Task.Delay(1500);
-            player.GetComponent<DiceManager>().TakeDamage(enemyDamage);
-            GameManager.Instance.UpdateBattleState(GameManager.BattleState.PLAYERTURN);
+            attackButton.interactable = true;
         }
 
 
@@ -60,10 +68,15 @@ public class BattleHandler : MonoBehaviour
 
     private async void SpawnCharacters()
     {
-        Instantiate(player, playerSpawnPoint);
-        Instantiate(enemy, enemySpawnPoint);
-        playerDamage = player.GetComponent<DiceManager>().BaseDamage;
-        enemyDamage = enemy.GetComponent<DiceManager>().BaseDamage;
+        playerGO = Instantiate(DiceInventory.Instance.StartingDices[++diceIndex], playerSpawnPoint);
+        playerGO.GetComponentInChildren<SpriteRenderer>().flipX = true;
+        enemyGO = Instantiate(enemy[++enemyDiceIndex], enemySpawnPoint);
+
+        playerGO.GetComponent<Dice>().Setup();
+        enemyGO.GetComponent<Dice>().Setup();
+
+        playerDamage = playerGO.GetComponent<Dice>().Attack;
+        enemyDamage = enemyGO.GetComponent<Dice>().Attack;
 
         await Task.Delay(1500);
         GameManager.Instance.UpdateBattleState(GameManager.BattleState.PLAYERTURN);
@@ -71,30 +84,53 @@ public class BattleHandler : MonoBehaviour
 
     public async void OnAttackButtonPressed()
     {
-        // player attack Animation
+        GameManager.Instance.UpdateBattleState(GameManager.BattleState.BATTLESITUATION);
         playerDamage = CalculateDamage(true);
-        await Task.Delay(1500); // time
-        enemy.GetComponent<DiceManager>().TakeDamage(playerDamage);
-       
-        //GameManager.Instance.UpdateBattleState(GameManager.BattleState.ENEMYTURN);
+        enemyDamage = CalculateDamage(false);
+
+        playerGO.GetComponentInChildren<Animator>().SetTrigger("AttackR");
+        //enemyGO.GetComponentInChildren<Animator>().SetTrigger("AttackL");
+
+        await Task.Delay(1500);
+
+        enemyGO.GetComponent<Dice>().TakeDamage(playerDamage, false);
+        int enemyHealth = enemyGO.GetComponent<Dice>().CurrentHealth;
+
+        if (enemyHealth <= 0)
+            return;
+
+        playerGO.GetComponent<Dice>().TakeDamage(enemyDamage, true);
+        int playerHealth = playerGO.GetComponent<Dice>().CurrentHealth;
+
     }
+
 
     private int CalculateDamage(bool isPlayer)
     {
         int dmg;
+       
         if (isPlayer)
         {
-            dmg = UnityEngine.Random.Range(1, player.GetComponent<DiceManager>().BaseDamage + 1);
+            dmg = UnityEngine.Random.Range(1, playerDamage+1);
         } else
         {
-            dmg = UnityEngine.Random.Range(1, enemy.GetComponent<DiceManager>().BaseDamage + 1);
+            dmg = UnityEngine.Random.Range(1, enemyDamage+1);
         }
 
         return dmg;
     }
 
+    public void SpawnNewPlayer(GameObject player)
+    {
+        playerGO = Instantiate(player, playerSpawnPoint);
+        playerGO.GetComponentInChildren<SpriteRenderer>().flipX = true;
+        playerGO.GetComponent<Dice>().Setup();
+        playerDamage = playerGO.GetComponent<Dice>().Attack;
+        diceIndex++;
+    }
+
     public void SetCardEffect(int dmgMultiplier, int hpMultiplier, int dmgBase, int hpBase)
     {
-        playerDamage = playerDamage + (playerDamage * dmgMultiplier) + dmgBase;
+        playerDamage = (playerDamage * dmgMultiplier) + dmgBase;
     }
 }

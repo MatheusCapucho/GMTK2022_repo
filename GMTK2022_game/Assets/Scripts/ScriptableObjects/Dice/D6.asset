@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 273edbbb977e10e46a274b5006a83efe, type: 3}
-  m_Name: D8
+  m_Name: D6
   m_EditorClassIdentifier: 
-  MaxHealth: 8
-  CurrentHealth: 8
-  attack: 8
+  MaxHealth: 6
+  CurrentHealth: 6
+  attack: 6
   image: {fileID: 0}

@@ -7,8 +7,9 @@ using UnityEngine;
 public class DiceComponent : ScriptableObject
 {
 
-    public int MaxHealth = 4;
-    public int attack = 4;
+    public int MaxHealth;
+    public int CurrentHealth;
+    public int attack;
     public Sprite image;
 
 }

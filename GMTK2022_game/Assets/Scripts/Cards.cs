@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class Cards : MonoBehaviour
 {
@@ -16,12 +18,20 @@ public class Cards : MonoBehaviour
     private int addBaseHealth;
 
     private BattleHandler battleHandler;
-
     private SpriteRenderer sr;
+
+    // Canvas Related
+    private TMP_Text tmpName;
+    private TMP_Text tmpDescription;
+    private Image cardImage;
+    private GameObject textPanel;
+
 
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        textPanel = GameObject.Find("TextPanel");
+        Debug.Log(textPanel);
     }
 
     void Start()
@@ -43,11 +53,20 @@ public class Cards : MonoBehaviour
         addBaseDamage = cardComponent.AddBaseDamage;
         addBaseHealth = cardComponent.AddBaseHealth;
         sr.sprite = _image;
+        tmpName = textPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        tmpDescription = textPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>();        
     }
 
     private void OnMouseEnter()
     {
-        //show floating description
+        ShowText();
+    }
+
+    private void ShowText()
+    {
+        textPanel.SetActive(true);
+        tmpName.text = name;
+        tmpDescription.text = description;
     }
 
     private void OnMouseOver()
@@ -59,12 +78,13 @@ public class Cards : MonoBehaviour
 
     private void OnMouseExit()
     {
-        //disable text description
+        textPanel.SetActive(false);
     }
 
     private void ApplyEffect()
     {
         battleHandler.SetCardEffect(damageMultiplier, healthMultiplier, addBaseDamage, addBaseHealth);
+        textPanel.SetActive(false);
     }
 
 }

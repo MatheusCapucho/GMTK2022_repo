@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public BattleState currentState;
     public static event Action<BattleState> OnBattleStateChanged;
 
+    private int diceIndex = 0;
+
 
     private void Awake()
     {
@@ -70,6 +72,16 @@ public class GameManager : MonoBehaviour
     }
     private void HandleLost()
     {
+        if (diceIndex < 2)
+        {
+            DiceInventory.Instance.StartingDices[diceIndex].SetActive(false);
+            var battleHandler = FindObjectOfType<BattleHandler>();
+            battleHandler.SpawnNewPlayer(DiceInventory.Instance.StartingDices[++diceIndex]);
+        } else
+        {
+            // end game;
+            Debug.Log("LostLostLost");
+        }
     }
 
     private void HandleWin()
@@ -85,6 +97,7 @@ public class GameManager : MonoBehaviour
     }
 
     private void HandleStart()
-    {       
+    {
+        diceIndex = 0;
     }
 }

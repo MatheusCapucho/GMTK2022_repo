@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: D20
   m_EditorClassIdentifier: 
   MaxHealth: 20
+  CurrentHealth: 20
   attack: 20
-  image: {fileID: 0}
+  image: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}

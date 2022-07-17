@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: Test Card
   Description: Esta eh uma carta de teste
   Image: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  DamageMultiplier: 0
+  DamageMultiplier: 1
   HealthMultiplier: 0
-  AddBaseDamage: 3
+  AddBaseDamage: 0
   AddBaseHealth: 0

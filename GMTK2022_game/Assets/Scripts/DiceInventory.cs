@@ -2,15 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardsList : MonoBehaviour
+public class DiceInventory : MonoBehaviour
 {
-    public static CardsList Instance;
-
-    [SerializeField] private List<Cards> myDeck;
-    private GameObject[] cardHand;
-    private Transform[] cardSlot;
-    private bool[] usedCard;
-
+    public static DiceInventory Instance;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -19,6 +13,14 @@ public class CardsList : MonoBehaviour
             Instance = this;
 
         DontDestroyOnLoad(Instance);
+
+    }
+
+    public GameObject[] StartingDices;
+
+    public void SetStartingDices(int index, GameObject dice)
+    {
+        StartingDices[index] = dice;
     }
 
 }
